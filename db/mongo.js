@@ -66,7 +66,10 @@ class MongoServices {
      * @returns {Promise}
      */
     insertMany(collection, arr){
-        return instance.db(this.dbName).collection(collection).insertMany(arr);
+        return instance
+                 .db(this.dbName)
+                 .collection(collection)
+                 .insertMany(arr);
     }
     // ## find ##
     /**
@@ -77,7 +80,12 @@ class MongoServices {
      * @returns {Promise}
      */
     find(collection, query, projection = null){
-        return instance.db(this.dbName).collection(collection).find(query).project(projection).toArray();    
+        return instance
+                 .db(this.dbName)
+                 .collection(collection)
+                 .find(query)
+                 .project(projection)
+                 .toArray();    
     }
 
     /**
@@ -88,7 +96,10 @@ class MongoServices {
      * @returns {Promise}
      */
     findOne(collection, query, projection = null){
-        return instance.db(this.dbName).collection(collection).findOne(query, { projection });
+        return instance
+                 .db(this.dbName)
+                 .collection(collection)
+                 .findOne(query, { projection });
 
     }
     // ## update ##
@@ -100,7 +111,10 @@ class MongoServices {
      * @returns {Promise}
      */
     updateOne(collection, query, newValue){
-        return instance.db(this.dbName).collection(collection).updateOne(query, newValue);
+        return instance
+                 .db(this.dbName)
+                 .collection(collection)
+                 .updateOne(query, newValue);
     }
 
     /**
@@ -110,7 +124,10 @@ class MongoServices {
      * @returns {Promise}
      */
     updateMany(collection, query){
-        return instance.db(this.dbName).collection(collection).updateMany(query);
+        return instance
+                 .db(this.dbName)
+                 .collection(collection)
+                 .updateMany(query);
     }
     // ## delete ##
     /**
@@ -120,7 +137,10 @@ class MongoServices {
      * @returns {Promise}
      */
     deleteOne(collection, query){
-        return instance.db(this.dbName).collection(collection).deleteOne(query);
+        return instance
+                 .db(this.dbName)
+                 .collection(collection)
+                 .deleteOne(query);
     }
 
     /**
@@ -130,7 +150,10 @@ class MongoServices {
      * @returns {Promise}
      */
     deleteMany(collection, query){
-        return instance.db(this.dbName).collection(collection).deleteMany(query);
+        return instance
+                 .db(this.dbName)
+                 .collection(collection)
+                 .deleteMany(query);
     }
     // ## drop ##
     /**
@@ -139,8 +162,12 @@ class MongoServices {
      * @returns {Promise}
      */
     dropCollection(collection){
-        return instance.db(this.dbName).collection(collection).drop();
+        return instance
+                 .db(this.dbName)
+                 .collection(collection)
+                 .drop();
     }
+
 }
 
 module.exports = MongoServices;

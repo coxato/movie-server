@@ -8,6 +8,5 @@ module.exports = {
     secret: process.env.SECRET,
     dbUSer: process.env.DB_USER,
     dbPassword: process.env.DB_PASSWORD,
-    dbNameOnline: process.env.DB_NAME,
-    clusterName: process.env.CLUSTER_NAME
+    dbNameOnline: process.env.DB_NAME
 }

@@ -47,7 +47,6 @@ async function closeServer(){
 async function RUN() {
     try {
         const mongo = await initMongo();
-        console.log("this is mongo in index", mongo);
         if(mongo) startServer();
     
     } catch ({message}) {

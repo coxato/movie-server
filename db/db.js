@@ -4,8 +4,7 @@ const { dev,
     offlineDatabase,
     dbUSer,
     dbNameOnline,
-    dbPassword,
-    clusterName
+    dbPassword
 } = require("../config/config");
 const Mongo = require('./mongo');
 
@@ -14,10 +13,9 @@ let dbName, URI;
 // is  development or production
 if(dev){
     URI = `mongodb://${offlineHost}:${offlinePort}`;
-    console.log("the OFF URI is ", URI);
     dbName = offlineDatabase;
 }else{
-    URI = `mongodb+srv://${dbUSer}:${dbPassword}@${clusterName}-ydbgb.mongodb.net/test?retryWrites=true&w=majority`;
+    URI = `mongodb+srv://${dbUSer}:${dbPassword}@cluster0.awvdj.mongodb.net/test?retryWrites=true&w=majority`;
     dbName = dbNameOnline;
 }
 
@@ -28,7 +26,7 @@ async function connectDB() {
 
 async function disconnectDB() {
     const mongo = new Mongo();
-    return await mongo.connect(URI, dbName);
+    return await mongo.disconnect();
 }
 
 module.exports = {

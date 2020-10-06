@@ -4,16 +4,15 @@ const mongoClientOptions = { useNewUrlParser: true,  useUnifiedTopology: true };
 // mongoDB instance
 // ###########################
 let instance;
+let dbName;
 // ###########################
 
 class MongoServices {
-    constructor(){ 
-        this.dbName = '';
-     }
+    constructor(){ }
 
     /**
      * @param {string} URI
-     * @param {string} dbName
+     * @param {string} dbname
      * @returns `true || false || error` depends if connection is succesfully or not.
      * 
      * NOTE: this is a singleton, so if it returns `false` is because a mongodb connection is already initialized,
@@ -21,13 +20,13 @@ class MongoServices {
      * 
      * only returns `true` when connection is initialized by first time
      */
-    async connect(URI, dbName){
+    async connect(URI, dbname){
         try {
             if(!instance){
                 // set first and unique connection
                 const client = new MongoClient(URI, mongoClientOptions);
                 instance = await client.connect();
-                this.dbName = dbName;
+                dbName = dbname;
                 console.log("db connected");
                 return true;
             }
@@ -56,7 +55,7 @@ class MongoServices {
      * @returns {Promise}
      */
     insertOne(collection, query){
-        return instance.db(this.dbName).collection(collection).insertOne(query);
+        return instance.db(dbName).collection(collection).insertOne(query);
     }
 
     /**
@@ -67,7 +66,7 @@ class MongoServices {
      */
     insertMany(collection, arr){
         return instance
-                 .db(this.dbName)
+                 .db(dbName)
                  .collection(collection)
                  .insertMany(arr);
     }
@@ -81,7 +80,7 @@ class MongoServices {
      */
     find(collection, query, projection = null){
         return instance
-                 .db(this.dbName)
+                 .db(dbName)
                  .collection(collection)
                  .find(query)
                  .project(projection)
@@ -97,7 +96,7 @@ class MongoServices {
      */
     findOne(collection, query, projection = null){
         return instance
-                 .db(this.dbName)
+                 .db(dbName)
                  .collection(collection)
                  .findOne(query, { projection });
 
@@ -112,7 +111,7 @@ class MongoServices {
      */
     updateOne(collection, query, newValue){
         return instance
-                 .db(this.dbName)
+                 .db(dbName)
                  .collection(collection)
                  .updateOne(query, newValue);
     }
@@ -125,7 +124,7 @@ class MongoServices {
      */
     updateMany(collection, query){
         return instance
-                 .db(this.dbName)
+                 .db(dbName)
                  .collection(collection)
                  .updateMany(query);
     }
@@ -138,7 +137,7 @@ class MongoServices {
      */
     deleteOne(collection, query){
         return instance
-                 .db(this.dbName)
+                 .db(dbName)
                  .collection(collection)
                  .deleteOne(query);
     }
@@ -151,7 +150,7 @@ class MongoServices {
      */
     deleteMany(collection, query){
         return instance
-                 .db(this.dbName)
+                 .db(dbName)
                  .collection(collection)
                  .deleteMany(query);
     }
@@ -163,7 +162,7 @@ class MongoServices {
      */
     dropCollection(collection){
         return instance
-                 .db(this.dbName)
+                 .db(dbName)
                  .collection(collection)
                  .drop();
     }

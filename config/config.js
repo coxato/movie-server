@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 module.exports = {
-    dev: process.env.DEV == 'development' ? true : false,
+    dev: process.env.DEV === 'true' ? true : false,
     offlinePort: process.env.OFFLINE_PORT,
     offlineDatabase: process.env.OFFLINE_DBNAME,
     offlineHost: process.env.OFFLINE_HOST,

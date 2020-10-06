@@ -1,7 +1,9 @@
 const Mongo = require("../db/mongo");
 const { ObjectID } = require("mongodb");
 const bcrypt = require("bcryptjs");
+const md5 = require("md5");
 const User = require("../models/user");
+
 
 class UserService{
     constructor(){
@@ -19,11 +21,13 @@ class UserService{
             const isUsernameTaken = await mongo.findOne(collection, {username: userData.username});
             const isEmailTaken = await mongo.findOne(collection, {email: userData.email});
             if(isUsernameTaken) return {created: false, message: 'username is already taken'};
-            if(isEmailTaken) return {created: false, message: 'this email is already use'};
+            if(isEmailTaken) return {created: false, message: 'this email is already in use'};
 
             // create crypt password and save user
             const user = new User(userData);
             user.password = await bcrypt.hash(user.password, 10);
+            // gravatar profile photo
+            user.photoUrl = `https://www.gravatar.com/avatar/${md5(user.email)}?d=identicon`;
 
             // save user
             await mongo.insertOne(collection, {...user});
@@ -56,6 +60,19 @@ class UserService{
             return { login: false, message, user: null }
         }
     }
+
+
+    async getUsers(){
+        try {
+            const {mongo, collection} = this;
+            const users = await mongo.find(collection, {}, { password: 0 });
+            return { users, message: '' };        
+        } catch ({message}) {
+            console.log("error getting users in getUsers", message);
+            return { users: null, message }
+        }
+    }
+
 }
 
 module.exports = UserService;

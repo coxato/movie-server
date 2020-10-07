@@ -34,7 +34,7 @@ class UserService{
             return {created: true, message: 'user created successfully'}
         } catch ({message}) {
             console.log('error in signupUser', message);
-            return { created: false, message }
+            return { created: false, message: 'user not created' }
         }
     }
     
@@ -57,7 +57,7 @@ class UserService{
             return {login: false, user: null, message: 'incorrect email or password'}
         } catch ({message}) {
             console.log('error in loginUser', message);
-            return { login: false, message, user: null }
+            return { login: false, message: 'user not login', user: null }
         }
     }
 
@@ -69,9 +69,22 @@ class UserService{
             return { users, message: '' };        
         } catch ({message}) {
             console.log("error getting users in getUsers", message);
-            return { users: null, message }
+            return { users: null, message: 'error getting users' }
         }
     }
+
+
+    async getUser(id){
+        try {
+            const {mongo, collection} = this;
+            const user = await mongo.findOne(collection, {_id: new ObjectID(id)}, { password: 0 })
+            return { user, message: ''}
+        
+        } catch ({message}) {
+            console.log('error in getUser', message);
+            return { user: null, message: 'error getting user' }
+        }
+    } 
 
 }
 

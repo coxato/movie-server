@@ -16,7 +16,7 @@ for (let i = 1; i <= 10; i++) {
         photoUrl
     });
     // movies data
-    user.likedMovies = ['tt6751668', 'tt1431045', 'tt0100669', 'tt3794354', 'tt0145487', 'tt0413300', 'tt0848228'];
+    // user.likedMovies = ['tt6751668', 'tt1431045', 'tt0100669', 'tt3794354', 'tt0145487', 'tt0413300', 'tt0848228'];
     user.favoriteMovies = ['tt6751668', 'tt0413300', 'tt0848228'];
     
     usersMock.push(user);

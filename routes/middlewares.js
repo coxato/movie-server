@@ -7,11 +7,13 @@ const { checkProps } = require("../utils/checkProps");
 function checkToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    if(!token) return res.sendStatus(401);
+    if(!token) return res.json({ status: 401, message: 'needs token in header', ok: false, data: null });
 
     jwt.verify(token, secret, (err, user) => {
-        console.log(err);
-        if (err) return res.sendStatus(403);
+        if (err){
+            console.log("error in jwt.verify");
+            return res.json({ status: 403, message: 'invalid token', ok: false, data: null });
+        }
         req.user = user;
         next();
     })
@@ -25,7 +27,7 @@ function checkBodyData(req, res, next) {
         return res.json({
             ok: false,
             message: 'the {body} object is missing values',
-            data: null
+            data: null,
         })
     }
 }

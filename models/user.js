@@ -8,7 +8,7 @@ class User{
         this.username = username;
         this.email = email;
         this.password = password;
-        this.likedMovies = [];
+        // this.likedMovies = [];
         this.favoriteMovies = [];
         this.photoUrl = photoUrl;
     }

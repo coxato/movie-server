@@ -2,12 +2,10 @@ const router = require("express").Router();
 const { secret } = require("../config/config");
 const jwt = require("jsonwebtoken");
 // service
-const UserServices = require("../services/userServices");
+const userServices = require("../services/userServices");
 // middlewares
 const { checkBodyData, checkToken } = require("./middlewares");
 
-// init services
-const userServices = new UserServices();
 
 router.post('/signup', checkBodyData, async (req, res) => {
     const userData = req.body;

@@ -169,4 +169,4 @@ class MongoServices {
 
 }
 
-module.exports = MongoServices;
+module.exports = new MongoServices();

@@ -27,8 +27,7 @@ function startServer(){
 // ===== init mongodb =====
 async function initMongo() {
     try { 
-        const firstConnection = await connectDB();
-        return firstConnection;
+        return await connectDB();
     }
     catch ({message}) {
         console.log('error connecting mongodb', message);
@@ -39,6 +38,7 @@ async function initMongo() {
 async function closeServer(){
     try {
         await disconnectDB();
+        console.log('db disconnected');
         server.close();
     } catch ({message}) {console.log("db error disconnection ",message)}
 }

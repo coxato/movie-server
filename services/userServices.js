@@ -1,4 +1,4 @@
-const Mongo = require("../db/mongo");
+const mongodb = require("../db/mongo");
 const { ObjectID } = require("mongodb");
 const bcrypt = require("bcryptjs");
 const md5 = require("md5");
@@ -8,7 +8,7 @@ const User = require("../models/user");
 class UserService{
     constructor(){
         this.collection = 'users';
-        this.mongo = new Mongo();
+        this.mongo = mongodb;
     }
     /**
      * 
@@ -88,4 +88,4 @@ class UserService{
 
 }
 
-module.exports = UserService;
+module.exports = new UserService();

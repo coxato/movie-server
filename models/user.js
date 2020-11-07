@@ -9,7 +9,7 @@ class User{
         this.email = email;
         this.password = password;
         // this.likedMovies = [];
-        this.favoriteMovies = [];
+        // this.favoriteMovies = [];
         this.photoUrl = photoUrl;
     }
 }

@@ -1,13 +1,6 @@
 {
     "name": "expressmovies",
     "version": 2,
-    "env": {
-        "SECRET": "@jwt-secret",
-        "DB_USER": "@dbuser",
-        "DB_PASSWORD": "@dbpassword",
-        "DB_NAME": "moviesapp",
-        "DEV": "false"
-    },
     "builds": [
         { "src": "index.js", "use": "@now/node-server" }
     ],

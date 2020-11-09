@@ -27,7 +27,6 @@ class MongoServices {
                 const client = new MongoClient(URI, mongoClientOptions);
                 instance = await client.connect();
                 dbName = dbname;
-                console.log("db connected");
                 return true;
             }
             return false;

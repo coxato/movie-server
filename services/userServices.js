@@ -61,7 +61,7 @@ class UserService{
         }
     }
 
-
+    // ====================== getting users =======================
     async getUsers(){
         try {
             const {mongo, collection} = this;
@@ -73,18 +73,49 @@ class UserService{
         }
     }
 
+    async getUserById(id){
+        const user = await this._getUser({ _id: new ObjectID(id) });
+        return user;
+    }
 
-    async getUser(id){
+    async getUserByEmail(email){
+        const user = await this._getUser({ email });
+        return user;
+    }
+
+    async _getUser(queryObj){
         try {
             const {mongo, collection} = this;
-            const user = await mongo.findOne(collection, {_id: new ObjectID(id)}, { password: 0 })
-            return { user, message: ''}
+            const user = await mongo.findOne(collection, queryObj, { password: 0 })
+            return { user, message: 'success search'}
         
         } catch ({message}) {
-            console.log('error in getUser', message);
+            console.log('error in _getUser', message);
             return { user: null, message: 'error getting user' }
         }
     } 
+
+    // ===================== deleting users =====================
+    
+    deleteUserByEmail(email){
+        return this._deleteUser({ email });
+    }
+
+    deleteUserById(id){
+        return this._deleteUser({ _id: new ObjectID(id) });
+    }
+
+    async _deleteUser(queryObj){
+        try {
+            const {mongo, collection} = this;
+            await mongo.deleteOne(collection, queryObj);
+            return { message: 'user deleted successfully'}
+        
+        } catch ({message}) {
+            console.log('error in _deleteUser', message);
+            return { message: 'error deleting user' }
+        }
+    }
 
 }
 

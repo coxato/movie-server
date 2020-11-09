@@ -10,8 +10,7 @@ const { checkBodyData, checkToken } = require("./middlewares");
 router.post('/signup', checkBodyData, async (req, res) => {
     const userData = req.body;
     const { created, message } = await userServices.signupUser(userData);
-    const ok = created;
-    return res.json({ ok, message, data: {} });
+    return res.json({ ok: created, message, data: {} });
 });
 
 router.post('/login', checkBodyData, async (req, res) => {
@@ -33,8 +32,13 @@ router.get('/', async (req, res) => {
 
 // get 1 user data via token
 router.get('/current', checkToken, async (req, res) => {
-    const { id } = req.user;
-    const { user, message } = await userServices.getUser(id);
+    const { id, email } = req.user;
+    let userObj;
+    // get info by id or email
+    if(id) userObj = await userServices.getUserById(id);
+    else userObj = await userServices.getUserByEmail(email);
+    
+    const { user, message } = userObj;
     return res.json({ ok: !!user, message, data: {user} }); 
 })
 

@@ -11,7 +11,7 @@ function checkToken(req, res, next) {
 
     jwt.verify(token, secret, (err, user) => {
         if (err){
-            console.log("error in jwt.verify");
+            // console.log("error in jwt.verify");
             return res.json({ status: 403, message: 'invalid token', ok: false, data: null });
         }
         req.user = user;

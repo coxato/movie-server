@@ -19,7 +19,8 @@ router.post('/login', checkBodyData, async (req, res) => {
     // create jwt
     let token = null;
     if(login){
-        token = jwt.sign({ id: user._id, email: user.email }, secret);
+        let { _id, email, username } = user;
+        token = jwt.sign({ id: _id, email, username }, secret);
     } 
     return res.json({ ok: login, message, data: { token } });
 });

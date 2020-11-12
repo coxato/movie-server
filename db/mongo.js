@@ -90,6 +90,26 @@ class MongoServices {
      * 
      * @param {string} collection 
      * @param {object} query 
+     * @param {number} skip 
+     * @param {number} limit 
+     * @param {object} projection 
+     * @returns {Promise}
+     */
+    findWithLimits(collection, query, skip = 0, limit = 0, projection = null){
+        return instance
+                 .db(dbName)
+                 .collection(collection)
+                 .find(query)
+                 .skip(skip)
+                 .limit(limit)
+                 .project(projection)
+                 .toArray();    
+    }
+
+    /**
+     * 
+     * @param {string} collection 
+     * @param {object} query 
      * @param {object} projection 
      * @returns {Promise}
      */
@@ -164,6 +184,19 @@ class MongoServices {
                  .db(dbName)
                  .collection(collection)
                  .drop();
+    }
+
+    // ## utils ##
+    /**
+     * 
+     * @param {string} collection 
+     * @returns {Promise}
+     */
+    countDocuments(collection, query){
+        return instance
+                .db(dbName)
+                .collection(collection)
+                .countDocuments(query)
     }
 
 }

@@ -16,6 +16,8 @@ class CommentService{
             let comment; 
             // if needs movieId
             if(!commentData.movieId) return { created: false, message: 'needs movieId to create comment', id: null }; 
+            // convert to string
+            commentData.movieId = String(commentData.movieId);
             // create and save comment
             comment = new Comment(commentData);
             const { insertedId } = await mongo.insertOne(collection, comment);
@@ -59,7 +61,12 @@ class CommentService{
     async getMoviesComments(movieId, skip = 0, limit = 5){
         try {
             const { mongo, collection } = this;
-            const comments = await mongo.findWithLimits(collection, {movieId}, skip, limit);
+            const comments = await mongo.findWithLimits(
+                collection, 
+                {movieId: String(movieId)}, 
+                parseInt(skip), 
+                parseInt(limit)
+            );
             return { comments, message: '' }
         } catch ({message}) {
             return { comments: null, message }

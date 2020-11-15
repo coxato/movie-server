@@ -9,7 +9,6 @@ router.post('/create', checkToken, checkBodyData, async (req, res) => {
         ...req.body,
         ...req.user
     }
-    console.log("the commentData", commentData);
     const { created, message, id } = await commentsService.createComment(commentData);
     res.json({
         ok: created,
@@ -20,7 +19,11 @@ router.post('/create', checkToken, checkBodyData, async (req, res) => {
 
 router.post('/reply', checkToken, checkBodyData, async (req, res) => {
     const { parentCommentId } = req.body;
-    const { created, message } = await commentsService.createReply(parentCommentId, req.body);
+    const replyData = {
+        ...req.user,
+        ...req.body
+    }
+    const { created, message } = await commentsService.createReply(parentCommentId, replyData);
     res.json({
         ok: created,
         message,
@@ -29,7 +32,7 @@ router.post('/reply', checkToken, checkBodyData, async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-    const { movieId, skip, limit } = req.params;
+    const { movieId, skip, limit } = req.query; 
     const { comments, message } = await commentsService.getMoviesComments(movieId, skip, limit);
     res.json({
         ok: !!comments,

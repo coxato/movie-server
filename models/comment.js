@@ -6,9 +6,11 @@ class Comment{
         this.photoUrl = photoUrl;
         this.date = Date.now();
         // if is not a response, it's a principal comment
-        if(isResponse){
+        if(!isResponse){
             this.responses = []
         }
+
+        this.isEdited = false;
     }
 }
 

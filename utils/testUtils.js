@@ -12,7 +12,7 @@ const getJWToken = async request => {
 // returns a short string with random chars
 const randomChars = () => {
     let chars = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
         let rNum = Math.round( Math.random() * (122 - 97) + 97);
         chars.push(
             String.fromCharCode(rNum)

@@ -57,6 +57,63 @@ class CommentService{
         }
     }
 
+
+    // update a principal comment
+    async updateComment(commentId, newText, username){
+        try {
+            const { mongo, collection } = this;
+            // get original comment and compare users (to security username is getting by jwt middleware)
+            const comment = await mongo.findOne(collection, {_id: new ObjectID(commentId)});
+            if(!comment) return { updated: false, message: 'comment does not exists' }
+            if( comment.username !== username ){
+                return { updated: false, message: 'not authorized' }
+            }
+
+            // all ok, update comment
+            const { modifiedCount } = await mongo.updateOne(
+                collection,
+                { _id: new ObjectID(commentId) },
+                { $set: { text: newText, isEdited: true } }
+            );
+            return { updated: !!modifiedCount, message: 'comment updated successfully' }
+
+        } catch ({message}) {
+            return { updated: false, message } 
+        }
+    }
+
+
+    async updateReply({parentCommentId, index, newText, username}){
+        try {
+            const { mongo, collection } = this;
+            // original comment
+            const comment = await mongo.findOne(collection, {_id: new ObjectID(parentCommentId)});
+            if(!comment) return { updated: false, message: 'reply does not exists' }
+
+            // check equal username
+            if(comment.responses[index].username !== username){
+                return { updated: false, message: 'not authorized' }
+            }
+
+            // all ok update reply
+            comment.responses[index] = {
+                ...comment.responses[index],
+                text: newText,
+                isEdited: true
+            }
+            const { modifiedCount } = await mongo.updateOne(
+                collection,
+                { _id: new ObjectID(parentCommentId) },
+                { $set: { responses: comment.responses } }
+            );
+
+            return { updated: !!modifiedCount, message: 'reply updated successfully' }
+
+        } catch ({message}) {
+            return { updated: false, message } 
+        }
+    }
+
     
     async getMoviesComments(movieId, skip = 0, limit = 5){
         try {

@@ -1,5 +1,6 @@
 const db = require("../../db/db");
 const commentsService = require("../commentsService");
+const { randomChars } = require('../../utils/testUtils');
 
 const commentData =  {
     username: 'user1',
@@ -7,7 +8,7 @@ const commentData =  {
     photoUrl: 'https://photo.com/1',
     movieId: '123456789'
 }
-let parentCommentId;
+let createdId;
 
 describe('commentService', () => {
     // connect to mongoDB
@@ -19,11 +20,13 @@ describe('commentService', () => {
         return db.disconnectDB();
     });
 
+    //                  ===== create =====
+
     // comment
     describe('creating comment', () => {
         test('create comment with good data', async () => {
             const { created, id } = await commentsService.createComment(commentData);
-            parentCommentId = id;
+            createdId = id;
             expect(created).toBe(true);
         });
 
@@ -39,7 +42,7 @@ describe('commentService', () => {
     // reply
     describe('creating reply', () => {
         test('create reply with good data', async () => {
-            const { created } = await commentsService.createReply(parentCommentId, {
+            const { created } = await commentsService.createReply(createdId, {
                 ...commentData,
                 text: 'response for comment'
             });
@@ -57,6 +60,84 @@ describe('commentService', () => {
         });
     });
 
+    //                  ===== getting =====
+
+    //                  ===== update =====
+
+    // comment
+    describe('update comment', () => {
+        test('update comment with good data', async () => {
+            const { message } = await commentsService.updateComment(
+                createdId, 
+                'this is a new text',
+                commentData.username
+            );
+            expect(message).toBe('comment updated successfully');
+        });
+
+        test('update comment with wrong commentId', async () => {
+            const { message } = await commentsService.updateComment(
+                '5fb13499ec21323364521846', 
+                'this is a new text: wrong commentId',
+                commentData.username
+            );
+            expect(message).toBe('comment does not exists');
+        });
+
+        test('update comment with different username', async () => {
+            const { message } = await commentsService.updateComment(
+                createdId, 
+                'this is a new text: different username',
+                'usernamerandom' + randomChars()
+            );
+            expect(message).toBe('not authorized');
+        });
+    });
+
+    // reply
+    describe('update reply', () => {
+        test('update reply with good data', async () => {
+            const { message } = await commentsService.updateReply({
+                parentCommentId: createdId,
+                index: 0,
+                newText: 'new text for reply',
+                username: commentData.username
+            });
+            expect(message).toBe('reply updated successfully');
+        });
+
+        test('update reply without parentCommentId', async () => {
+            const { message } = await commentsService.updateReply({
+                parentCommentId: null,
+                index: 0,
+                newText: 'new text for reply: without parentCommentId',
+                username: commentData.username
+            });
+            expect(message).toBe('reply does not exists');
+        });
+
+        test('update reply with wrong parentCommentId', async () => {
+            const { message } = await commentsService.updateReply({
+                parentCommentId: '5fb13499ec21323364521846',
+                index: 0,
+                newText: 'new text for reply: wrong parentCommentId',
+                username: commentData.username
+            });
+            expect(message).toBe('reply does not exists');
+        });
+
+        test('update reply with different username', async () => {
+            const { message } = await commentsService.updateReply({
+                parentCommentId: createdId,
+                index: 0,
+                newText: 'new text for reply: different username',
+                username: 'usernamerandom' + randomChars()
+            });
+            expect(message).toBe('not authorized');
+        });
+    }); 
+
+    // ===== delete =====
 
 
 });

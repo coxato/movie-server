@@ -20,7 +20,7 @@ describe('commentService', () => {
         return db.disconnectDB();
     });
 
-    //                  ===== create =====
+    //                  ========== create ==========
 
     // comment
     describe('creating comment', () => {
@@ -60,9 +60,7 @@ describe('commentService', () => {
         });
     });
 
-    //                  ===== getting =====
-
-    //                  ===== update =====
+    //                  =========== update ===========
 
     // comment
     describe('update comment', () => {
@@ -137,7 +135,32 @@ describe('commentService', () => {
         });
     }); 
 
-    // ===== delete =====
+    // ========== delete ==========
+    describe("delete reply", () => {
+        test("delete the reply passing wrong parentCommentId", async () => {
+            const { deleted } = await commentsService.deleteReply('', 0);
+            expect(deleted).toBeFalsy();
+        })
 
+        test("delete the reply and expects zero length", async () => {
+            const { message } = await commentsService.deleteReply(createdId, 0);
+            const { comments } = await commentsService.getMoviesComments(commentData.movieId);
+            expect(message).toBe('reply deleted successfully');
+            expect(comments[0].responses.length).toBe(0);
+        })
+    });
 
+    describe("delete comment", () => {
+        test('delete without commentId', async () => {
+            const { deleted } = await commentsService.deleteComment('');
+            expect(deleted).toBeFalsy();
+        });
+
+        test('delete comment with commentId', async () => {
+            const { message } = await commentsService.deleteComment(createdId);
+            const { comments } = await commentsService.getMoviesComments(createdId);
+            expect(message).toBe('comment deleted successfully');
+            expect(comments).toEqual([]);
+        });
+    });
 });

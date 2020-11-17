@@ -27,7 +27,9 @@ router.post('/reply', checkToken, checkBodyData, async (req, res) => {
     return res.json({
         ok: created,
         message,
-        data: {}
+        data: {
+            parentCommentId
+        }
     });
 });
 
@@ -52,9 +54,10 @@ router.put('/update-reply', checkToken, checkBodyData, async (req, res ) => {
         index,
         username
     });
-    return res.json({ ok: updated, message, data: {} })
+    return res.json({ ok: updated, message, data: { parentCommentId } })
 })
 
+// ===== get comments =====
 router.get('/', async (req, res) => {
     const { movieId, skip, limit } = req.query; 
     const { comments, message } = await commentsService.getMoviesComments(movieId, skip, limit);
@@ -63,6 +66,19 @@ router.get('/', async (req, res) => {
         message,
         data: { comments }
     });
-})
+});
+
+// ===== delete =====
+router.delete('/delete-comment', checkToken, checkBodyData, async (req, res) => {
+    const { commentId } = req.query;
+    const { deleted, message } = await commentsService.deleteComment(commentId);
+    return res.json({ ok: deleted, message, data: {} });
+});
+
+router.delete('/delete-reply', checkToken, checkBodyData, async (req, res) => {
+    const { parentCommentId, index } = req.query;
+    const { deleted, message } = await commentsService.deleteReply(parentCommentId, index);
+    return res.json({ ok: deleted, message, data: {} });
+});
 
 module.exports = router;

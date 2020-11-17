@@ -9,6 +9,8 @@ class CommentService{
         this.mongo = mongodb;
     }
     
+    // ===== create =====
+
     // create a principal comment
     async createComment(commentData){
         try {
@@ -47,7 +49,7 @@ class CommentService{
                 }
             );
             if(updated.modifiedCount){
-                return { created: true, message: 'reply created successfully' }
+                return { created: true, message: 'reply created successfully', parentCommentId }
             }else{
                 return { created: false, message: 'reply not created, parent comment does not exist' }
             }
@@ -57,6 +59,7 @@ class CommentService{
         }
     }
 
+    // ===== update =====
 
     // update a principal comment
     async updateComment(commentId, newText, username){
@@ -107,15 +110,52 @@ class CommentService{
                 { $set: { responses: comment.responses } }
             );
 
-            return { updated: !!modifiedCount, message: 'reply updated successfully' }
+            return { updated: !!modifiedCount, message: 'reply updated successfully', parentCommentId }
 
         } catch ({message}) {
             return { updated: false, message } 
         }
     }
 
+    // ===== delete =====
+
+    async deleteComment(commentId){
+        try {
+            // TODO: more security, like compare usernames
+            const { mongo, collection } = this;
+            const { deletedCount } = await mongo.deleteOne(collection, { _id: new ObjectID(commentId) });
+            
+            if(!deletedCount) return { deleted: false, message: 'commentId does not match with any comment' } 
+            else return { deleted: true, message: 'comment deleted successfully' }
+
+        } catch ({message}) {
+            return { deleted: false, message }
+        }
+    }
+
+    async deleteReply(parentCommentId, index){
+        try {
+            // TODO: more security, like compare usernames
+            const { mongo, collection } = this;
+            
+            const comment = await mongo.findOne(collection, { _id: new ObjectID(parentCommentId) });
+            if(!comment) return { deleted: false, message: 'parentCommentId does not match with any comment' };
+
+            // delete reply from array and save
+            comment.responses.splice(index, 1);
+            const { modifiedCount } = await mongo.updateOne(
+                collection,
+                { _id: new ObjectID(parentCommentId) },
+                { $set: { responses: comment.responses } }
+            );
+            return { deleted: !!modifiedCount, message: 'reply deleted successfully' }
+
+        } catch ({message}) {
+            return { deleted: false, message }
+        }
+    }
     
-    async getMoviesComments(movieId, skip = 0, limit = 5){
+    async getMoviesComments(movieId, skip = 0, limit = 0){
         try {
             const { mongo, collection } = this;
             const comments = await mongo.findWithLimits(

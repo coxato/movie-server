@@ -10,16 +10,10 @@ router.get('/:userId', checkToken, async (req, res) => {
     return res.json({ ok: !!moviesFav, message: '', data: moviesFav })
 });
 
-router.post('/', checkBodyData, checkToken, async (req, res) => {
+router.post('/toggle', checkBodyData, checkToken, async (req, res) => {
     const { userId, movieId } = req.body;
-    const saved = await movieFavServices.addToFavorites(userId, movieId);
-    return res.json({ ok: saved, message: '', data: null })
-})
-
-router.delete('/', checkBodyData, checkToken, async (req, res) => {
-    const { userId, movieId } = req.body;
-    const deleted = await movieFavServices.deleteFromFavorites(userId, movieId);
-    return res.json({ ok: deleted, message: '', data: null })
+    const { ok, message } = await movieFavServices.toggleFav(userId, movieId);
+    return res.json({ ok, message, data: null })
 })
 
 module.exports = router;

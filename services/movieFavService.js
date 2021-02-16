@@ -11,30 +11,22 @@ class MovieFavServices{
      * @param {string} userId 
      * @param {string} movieId 
      */
-    async addToFavorites(userId, movieId){
+    async toggleFav(userId, movieId){
         try {
-            await mongodb.insertOne(this.collection, { userId: new ObjectID(userId), movieId });
-            return true;
+            const query = { userId: new ObjectID(userId), movieId };
+            
+            const exists = await mongodb.findOne(this.collection, query);
+
+            if(exists){
+                await mongodb.deleteOne(this.collection, query);
+            }else{
+                await mongodb.insertOne(this.collection, query);
+            }
+            return { ok: true, message: `${exists ? 'deleted' : 'added'} successfully` };
 
         } catch ({message}) {
             console.error("\n\nerror adding movie to favorites\n", message);
-            return false;
-        }
-    }
-
-    /**
-     * 
-     * @param {string} userId 
-     * @param {string} movieId 
-     */
-    async deleteFromFavorites(userId, movieId){
-        try {
-            await mongodb.deleteOne(this.collection, { userId: new ObjectID(userId), movieId });
-            return true;
-
-        } catch ({message}) {
-            console.error("\n\nerror deleting movie to favorites\n", message);
-            return false;
+            return { ok: false, message };;
         }
     }
 
